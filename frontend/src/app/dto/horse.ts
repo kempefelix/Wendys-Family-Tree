@@ -7,6 +7,7 @@ export interface Horse {
   description?: string;
   dateOfBirth: Date;
   sex: Sex;
+  image?: string;
   owner?: Owner;
 }
 
@@ -20,6 +21,7 @@ export interface HorseCreate {
   description?: string;
   dateOfBirth: Date;
   sex: Sex;
+  image?: string;
   ownerId?: number;
 }
 
@@ -29,6 +31,7 @@ export function convertFromHorseToCreate(horse: Horse): HorseCreate {
     description: horse.description,
     dateOfBirth: horse.dateOfBirth,
     sex: horse.sex,
+    image: horse.image,
     ownerId: horse.owner?.id,
   };
 }

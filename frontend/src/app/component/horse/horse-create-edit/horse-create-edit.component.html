@@ -82,7 +82,8 @@
           valueNeedsToMatchSuggestion="true"
           [(ngModel)]="horse.owner"
           [formatModel]="formatOwnerName"
-          [suggestions]="ownerSuggestions">
+          [suggestions]="ownerSuggestions"
+          pattern="^[A-Za-zÄÖÜäöüß]+(?: [A-Za-zÄÖÜäöüß]+)+$">
         </app-autocomplete>
       </div>
     </div>
@@ -114,4 +115,21 @@
   </div>
 </form>
 
-
+<div class="row mb-2">
+  <div class="mb-2 col-lg-6">
+    <div class="row">
+      <label for="horseImage" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+        Image URL
+      </label>
+      <div class="col-md-10 col-lg-8">
+        <input
+          type="text"
+          id="horseImage"
+          name="horseImage"
+          placeholder="Enter image URL"
+          class="form-control"
+          [(ngModel)]="horse.image">
+      </div>
+    </div>
+  </div>
+</div>

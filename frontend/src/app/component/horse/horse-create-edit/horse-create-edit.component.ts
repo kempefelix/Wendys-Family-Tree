@@ -36,6 +36,8 @@ export class HorseCreateEditComponent implements OnInit {
     description: '',
     dateOfBirth: new Date(),
     sex: Sex.female,
+    image: '',
+    owner: undefined
   };
   horseBirthDateIsSet = false;
 
@@ -127,12 +129,15 @@ export class HorseCreateEditComponent implements OnInit {
     };
   }
 
-  public formatOwnerName(owner: Owner | null | undefined): string {
-    return (owner == null)
-      ? ''
-      : `${owner.firstName} ${owner.lastName}`;
+  public formatOwnerName(owner: Owner | null | undefined | string): string {
+    if (!owner) {
+      return '';
+    }
+    if (typeof owner === 'string') {
+      return owner;
+    }
+    return `${owner.firstName} ${owner.lastName}`;
   }
-
 
   public onSubmit(form: NgForm): void {
     console.log('is form valid?', form.valid, this.horse);

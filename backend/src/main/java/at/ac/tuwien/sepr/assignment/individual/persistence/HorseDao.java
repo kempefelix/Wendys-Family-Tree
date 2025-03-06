@@ -1,10 +1,12 @@
 package at.ac.tuwien.sepr.assignment.individual.persistence;
 
 
+import java.util.List;
+
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
-import java.util.List;
 
 /**
  * Data Access Object for horses.
@@ -40,4 +42,13 @@ public interface HorseDao {
    */
   Horse getById(long id) throws NotFoundException;
 
+  
+  /**
+   * Creates a new horse in the persistent data store based on the given DTO.
+   *
+   * @param horseCreateDto the DTO with the horse creation data
+   * @return the created Horse with its generated ID
+   * @throws NotFoundException if a related entity (e.g., owner) is not found
+   */
+  Horse create(HorseCreateDto horseCreateDto) throws NotFoundException;
 }

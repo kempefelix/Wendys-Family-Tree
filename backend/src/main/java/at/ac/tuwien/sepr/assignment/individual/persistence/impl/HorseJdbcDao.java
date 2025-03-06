@@ -1,20 +1,23 @@
 package at.ac.tuwien.sepr.assignment.individual.persistence.impl;
 
+import java.lang.invoke.MethodHandles;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.stereotype.Repository;
+
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import at.ac.tuwien.sepr.assignment.individual.exception.FatalException;
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
 import at.ac.tuwien.sepr.assignment.individual.persistence.HorseDao;
 import at.ac.tuwien.sepr.assignment.individual.type.Sex;
-import java.lang.invoke.MethodHandles;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.stereotype.Repository;
 
 /**
  * JDBC implementation of {@link HorseDao} for interacting with the database.
@@ -38,7 +41,9 @@ public class HorseJdbcDao implements HorseDao {
               SET name = :name,
                   description = :description,
                   date_of_birth = :date_of_birth,
-                  sex = :sex
+                  sex = :sex,
+                  image = :image,
+                  owner_id = :owner_id
               WHERE id = :id
           """;
 
@@ -90,6 +95,7 @@ public class HorseJdbcDao implements HorseDao {
         .param("description", horse.description())
         .param("date_of_birth", horse.dateOfBirth())
         .param("sex", horse.sex().toString())
+        .param("image", horse.image())
         .param("owner_id", horse.ownerId())
         .update();
 
@@ -105,6 +111,7 @@ public class HorseJdbcDao implements HorseDao {
         horse.description(),
         horse.dateOfBirth(),
         horse.sex(),
+        horse.image(),
         horse.ownerId());
   }
 
@@ -116,6 +123,43 @@ public class HorseJdbcDao implements HorseDao {
         result.getString("description"),
         result.getDate("date_of_birth").toLocalDate(),
         Sex.valueOf(result.getString("sex")),
+        result.getString("image"),
         result.getObject("owner_id", Long.class));
+  }
+
+
+  @Override
+  public Horse create(HorseCreateDto horseCreateDto) throws NotFoundException {
+    String sqlInsert = "INSERT INTO " + TABLE_NAME 
+                       +
+                       " (name, description, date_of_birth, sex, image, owner_id) " 
+                       +
+                       "VALUES (:name, :description, :date_of_birth, :sex, :image, :owner_id)";
+    
+    int updated = jdbcClient
+        .sql(sqlInsert)
+        .param("name", horseCreateDto.name())
+        .param("description", horseCreateDto.description())
+        .param("date_of_birth", horseCreateDto.dateOfBirth())
+        .param("sex", horseCreateDto.sex().toString())
+        .param("image", horseCreateDto.image())
+        .param("owner_id", horseCreateDto.ownerId())
+        .update();
+    
+    if (updated == 0) {
+      throw new NotFoundException("Failed to create horse. No rows affected.");
+    }
+    
+    long generatedId = 0; // Dummy Value
+    
+    return new Horse(
+        generatedId,
+        horseCreateDto.name(),
+        horseCreateDto.description(),
+        horseCreateDto.dateOfBirth(),
+        horseCreateDto.sex(),
+        horseCreateDto.image(),
+        horseCreateDto.ownerId()
+    );
   }
 }

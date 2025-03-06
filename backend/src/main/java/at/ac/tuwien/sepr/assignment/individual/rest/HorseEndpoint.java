@@ -1,5 +1,22 @@
 package at.ac.tuwien.sepr.assignment.individual.rest;
 
+import java.lang.invoke.MethodHandles;
+import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseDetailDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseListDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseSearchDto;
@@ -8,19 +25,6 @@ import at.ac.tuwien.sepr.assignment.individual.exception.ConflictException;
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
 import at.ac.tuwien.sepr.assignment.individual.exception.ValidationException;
 import at.ac.tuwien.sepr.assignment.individual.service.HorseService;
-import java.lang.invoke.MethodHandles;
-import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 /**
  * REST controller for managing horse-related operations.
@@ -70,6 +74,38 @@ public class HorseEndpoint {
     } catch (NotFoundException e) {
       HttpStatus status = HttpStatus.NOT_FOUND;
       logClientError(status, "Horse to get details of not found", e);
+      throw new ResponseStatusException(status, e.getMessage(), e);
+    }
+  }
+
+  
+  /**
+   * Creates a new horse.
+   *
+   * @param horseCreateDto the DTO containing the data for creating a new horse
+   * @return the details of the created horse
+   * @throws ValidationException if validation fails
+   * @throws ConflictException   if a conflict occurs while creating
+   * @throws ResponseStatusException if a related entity is not found
+   */
+  @PostMapping
+  public HorseDetailDto createHorse(@RequestBody HorseCreateDto horseCreateDto)
+      throws ValidationException, ConflictException {
+    LOG.info("POST " + BASE_PATH);
+    LOG.debug("Body of request:\n{}", horseCreateDto);
+    try {
+      return service.create(horseCreateDto);
+    } catch (ValidationException e) {
+      HttpStatus status = HttpStatus.BAD_REQUEST;
+      logClientError(status, "Validation failed while creating horse", e);
+      throw new ResponseStatusException(status, e.getMessage(), e);
+    } catch (ConflictException e) {
+      HttpStatus status = HttpStatus.CONFLICT;
+      logClientError(status, "Conflict occurred while creating horse", e);
+      throw new ResponseStatusException(status, e.getMessage(), e);
+    } catch (NotFoundException e) {
+      HttpStatus status = HttpStatus.NOT_FOUND;
+      logClientError(status, "Related entity not found while creating horse", e);
       throw new ResponseStatusException(status, e.getMessage(), e);
     }
   }

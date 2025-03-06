@@ -70,6 +70,10 @@ export class AutocompleteComponent<T> implements OnInit, ControlValueAccessor {
    */
   @Input() formatModel = (model: T | null) => (model as any).toString();
 
+
+  @Input() pattern: string | null = null;
+
+
   // Dummy functions for the callback variables, so that we do not need to check,
   // if one was already registered
   onChange = (quantity: any) => {};

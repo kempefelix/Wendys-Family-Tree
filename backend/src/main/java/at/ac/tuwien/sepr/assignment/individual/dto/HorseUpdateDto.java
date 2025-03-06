@@ -1,7 +1,8 @@
 package at.ac.tuwien.sepr.assignment.individual.dto;
 
-import at.ac.tuwien.sepr.assignment.individual.type.Sex;
 import java.time.LocalDate;
+
+import at.ac.tuwien.sepr.assignment.individual.type.Sex;
 
 /**
  * Represents a Data Transfer Object (DTO) for updating horse details.
@@ -13,7 +14,7 @@ public record HorseUpdateDto(
     String description,
     LocalDate dateOfBirth,
     Sex sex,
+    String image,
     Long ownerId
 ) {
-
 }

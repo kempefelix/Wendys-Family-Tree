@@ -1,7 +1,8 @@
 package at.ac.tuwien.sepr.assignment.individual.entity;
 
-import at.ac.tuwien.sepr.assignment.individual.type.Sex;
 import java.time.LocalDate;
+
+import at.ac.tuwien.sepr.assignment.individual.type.Sex;
 
 /**
  * Represents a horse in the persistent data store.
@@ -12,6 +13,7 @@ public record Horse(
     String description,
     LocalDate dateOfBirth,
     Sex sex,
+    String image,
     Long ownerId
 ) {
 }

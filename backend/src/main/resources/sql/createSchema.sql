@@ -15,5 +15,6 @@ CREATE TABLE IF NOT EXISTS horse
   description VARCHAR(4095),
   date_of_birth DATE NOT NULL,
   sex ENUM('MALE', 'FEMALE') NOT NULL,
+  image VARCHAR(255),
   owner_id BIGINT
 );

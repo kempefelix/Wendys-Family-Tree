@@ -1,13 +1,15 @@
 package at.ac.tuwien.sepr.assignment.individual.service;
 
 
+import java.util.stream.Stream;
+
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseDetailDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseListDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
 import at.ac.tuwien.sepr.assignment.individual.exception.ConflictException;
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
 import at.ac.tuwien.sepr.assignment.individual.exception.ValidationException;
-import java.util.stream.Stream;
 
 /**
  * Service for working with horses.
@@ -46,4 +48,16 @@ public interface HorseService {
    */
   HorseDetailDto getById(long id) throws NotFoundException;
 
+
+  /**
+   * Creates a new horse based on the given DTO.
+   *
+   * @param horseCreateDto the DTO with horse creation data
+   * @return the created horse as a detailed DTO
+   * @throws ValidationException if the provided data is invalid
+   * @throws ConflictException if there is a conflict (e.g., related entity not found)
+   * @throws NotFoundException if a related entity (e.g., owner) is not found
+   */
+  HorseDetailDto create(HorseCreateDto horseCreateDto)
+      throws ValidationException, ConflictException, NotFoundException;
 }

@@ -5,7 +5,8 @@
   [(ngModel)]="inputText"
   (ngModelChange)="inputChange.next($event)"
   [disabled]="disabled"
-  (blur)="resetInputText()">
+  (blur)="resetInputText()"
+  [attr.pattern]="pattern">
 
 <datalist [id]="dataListId" [ngClass]="datalistClass">
   @for (candidateEntry of valueCandidates | keyvalue; track candidateEntry.key) {
