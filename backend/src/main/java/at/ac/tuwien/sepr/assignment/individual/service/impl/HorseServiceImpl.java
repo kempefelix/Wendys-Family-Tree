@@ -114,4 +114,11 @@ public class HorseServiceImpl implements HorseService {
         ownerMapForSingleId(createdHorse.ownerId())
     );
   }
+
+
+  @Override
+  public void delete(long id) throws NotFoundException {
+    dao.delete(id);
+  }
+
 }

@@ -162,4 +162,18 @@ public class HorseJdbcDao implements HorseDao {
         horseCreateDto.ownerId()
     );
   }
+
+
+  @Override
+  public void delete(long id) throws NotFoundException {
+    String sqlDelete = "DELETE FROM " + TABLE_NAME + " WHERE id = :id";
+    int affectedRows = jdbcClient
+        .sql(sqlDelete)
+        .param("id", id)
+        .update();
+    if (affectedRows == 0) {
+      throw new NotFoundException("No horse with ID " + id + " found for deletion.");
+    }
+  }
+
 }

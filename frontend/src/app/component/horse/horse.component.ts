@@ -65,6 +65,20 @@ export class HorseComponent implements OnInit {
 
 
   deleteHorse(horse: Horse) {
-    // TODO: delete the horse
+    if (horse.id == null) {
+      console.error('Horse ID is undefined, cannot delete horse.');
+      return;
+    }
+    this.service.delete(horse.id!).subscribe({
+      next: () => {
+        this.notification.success(`Horse ${horse.name} deleted successfully.`);
+        this.reloadHorses();
+      },
+      error: (error: any) => {
+        console.error('Error deleting horse', error);
+        this.notification.error('Could not delete horse.', 'Error');
+      }
+    });
   }
+  
 }

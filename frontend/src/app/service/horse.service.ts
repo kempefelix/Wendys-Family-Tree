@@ -73,4 +73,9 @@ export class HorseService {
   getById(id: number): Observable<Horse> {
     return this.http.get<Horse>(`${baseUri}/${id}`);
   }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${baseUri}/${id}`);
+  }
+  
 }

@@ -51,4 +51,6 @@ public interface HorseDao {
    * @throws NotFoundException if a related entity (e.g., owner) is not found
    */
   Horse create(HorseCreateDto horseCreateDto) throws NotFoundException;
+
+  void delete(long id) throws NotFoundException;
 }

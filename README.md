@@ -4,8 +4,10 @@
 
 **Name:** Felix Kempe  
 **Student ID:** e12327971  
-**Total Project Hours:** 3 hours
+**Total Project Hours:** 4.25 hours
 
-| Date       | Duration (Hours) | Story Worked On                      |
-|------------|------------------|--------------------------------------|
-| 2025-03-06 | 3                | US1: Implement Horse Management      |
+| Date       | Duration (Hours) | Story Worked On                                           |
+|------------|------------------|-----------------------------------------------------------|
+| 2025-03-06 | 3                | US1: Implement Horse Management                           |
+| 2025-03-06 | 1                | US2: Implement edit functionality for existing horses     |
+| 2025-03-06 | 0.25             | US3: Implement horse deletion functionality               |

@@ -60,4 +60,8 @@ public interface HorseService {
    */
   HorseDetailDto create(HorseCreateDto horseCreateDto)
       throws ValidationException, ConflictException, NotFoundException;
+
+
+  void delete(long id) throws NotFoundException;
+
 }
