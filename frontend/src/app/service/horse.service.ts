@@ -57,4 +57,20 @@ export class HorseService {
     return horse;
   }
 
+  update(horse: Horse): Observable<Horse> {
+    const updateDto = {
+      name: horse.name,
+      description: horse.description,
+      dateOfBirth: horse.dateOfBirth,
+      sex: horse.sex,
+      image: horse.image,
+      ownerId: horse.owner?.id
+    };
+    return this.http.put<Horse>(`${baseUri}/${horse.id}`, updateDto);
+  }
+  
+
+  getById(id: number): Observable<Horse> {
+    return this.http.get<Horse>(`${baseUri}/${id}`);
+  }
 }

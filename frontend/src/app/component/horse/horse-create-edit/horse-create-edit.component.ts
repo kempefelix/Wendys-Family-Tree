@@ -56,15 +56,19 @@ export class HorseCreateEditComponent implements OnInit {
     switch (this.mode) {
       case HorseCreateEditMode.create:
         return 'Create New Horse';
+      case HorseCreateEditMode.edit:
+        return 'Edit Horse';
       default:
         return '?';
     }
   }
-
+  
   public get submitButtonText(): string {
     switch (this.mode) {
       case HorseCreateEditMode.create:
         return 'Create';
+      case HorseCreateEditMode.edit:
+        return 'Save Changes';
       default:
         return '?';
     }
@@ -117,11 +121,40 @@ export class HorseCreateEditComponent implements OnInit {
     ? of([])
     : this.ownerService.searchByName(input, 5);
 
-  ngOnInit(): void {
-    this.route.data.subscribe(data => {
-      this.mode = data.mode;
-    });
-  }
+
+
+    ngOnInit(): void {
+      this.route.data.subscribe(data => {
+        this.mode = data.mode;
+        if (this.mode === HorseCreateEditMode.edit) {
+          this.route.paramMap.subscribe(params => {
+            const horseId = params.get('id');
+            if (horseId) {
+              this.loadHorseForEdit(+horseId);
+            }
+          });
+        }
+      });
+    }
+    
+    private loadHorseForEdit(id: number): void {
+      this.service.getById(id).subscribe({
+        next: (horseDto: Horse) => {
+          this.horse = {
+            ...horseDto,
+            dateOfBirth: new Date(horseDto.dateOfBirth)
+          };
+          this.horseBirthDateIsSet = true;
+          console.log('Loaded horse for edit:', this.horse);
+        },
+        error: err => {
+          console.error('Error loading horse for edit', err);
+          this.notification.error('Could not load horse for editing.', 'Error');
+        }
+      });
+    }
+    
+    
 
   public dynamicCssClassesForInput(input: NgModel): any {
     return {
@@ -145,6 +178,7 @@ export class HorseCreateEditComponent implements OnInit {
       if (this.horse.description === '') {
         delete this.horse.description;
       }
+  
       let observable: Observable<Horse>;
       switch (this.mode) {
         case HorseCreateEditMode.create:
@@ -152,18 +186,24 @@ export class HorseCreateEditComponent implements OnInit {
             convertFromHorseToCreate(this.horse)
           );
           break;
+  
+        case HorseCreateEditMode.edit:
+          observable = this.service.update(this.horse);
+          break;
+  
         default:
           console.error('Unknown HorseCreateEditMode', this.mode);
           return;
       }
+  
       observable.subscribe({
         next: data => {
           this.notification.success(`Horse ${this.horse.name} successfully ${this.modeActionFinished}.`);
           this.router.navigate(['/horses']);
         },
         error: error => {
-          console.error('Error creating horse', error);
-          this.notification.error(this.errorFormatter.format(error), 'Could Not Create Horse', {
+          console.error('Error creating/updating horse', error);
+          this.notification.error(this.errorFormatter.format(error), 'Could Not Create/Update Horse', {
             enableHtml: true,
             timeOut: 10000,
           });
@@ -171,4 +211,5 @@ export class HorseCreateEditComponent implements OnInit {
       });
     }
   }
+  
 }

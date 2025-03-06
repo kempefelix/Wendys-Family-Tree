@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Log ###
+log
+
+### Database ### 
+wendydb.lock.db
+wendydb.mv.db
