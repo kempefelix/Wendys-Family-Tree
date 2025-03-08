@@ -1,8 +1,10 @@
 package at.ac.tuwien.sepr.assignment.individual.dto;
 
-import at.ac.tuwien.sepr.assignment.individual.type.Sex;
 import java.time.LocalDate;
+
 import org.springframework.format.annotation.DateTimeFormat;
+
+import at.ac.tuwien.sepr.assignment.individual.type.Sex;
 
 /**
  * DTO to bundle the query parameters used in searching horses.
@@ -15,6 +17,8 @@ public record HorseSearchDto(
     LocalDate bornBefore,
     Sex sex,
     String ownerName,
-    Integer limit
+    Integer limit,
+    Long parentFemaleId,
+    Long parentMaleId
 ) {
 }

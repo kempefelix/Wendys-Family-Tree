@@ -26,6 +26,7 @@ import at.ac.tuwien.sepr.assignment.individual.mapper.HorseMapper;
 import at.ac.tuwien.sepr.assignment.individual.persistence.HorseDao;
 import at.ac.tuwien.sepr.assignment.individual.service.HorseService;
 import at.ac.tuwien.sepr.assignment.individual.service.OwnerService;
+import at.ac.tuwien.sepr.assignment.individual.type.Sex;
 
 /**
  * Implementation of {@link HorseService} for handling image storage and retrieval.
@@ -37,7 +38,6 @@ public class HorseServiceImpl implements HorseService {
   private final HorseMapper mapper;
   private final HorseValidator validator;
   private final OwnerService ownerService;
-
 
   @Autowired
   public HorseServiceImpl(HorseDao dao,
@@ -68,18 +68,30 @@ public class HorseServiceImpl implements HorseService {
         .map(horse -> mapper.entityToListDto(horse, ownerMap));
   }
 
-
   @Override
   public HorseDetailDto update(HorseUpdateDto horse) throws NotFoundException, ValidationException, ConflictException {
     LOG.trace("update({})", horse);
     validator.validateForUpdate(horse);
 
+    if (horse.parentFemaleId() != null) {
+      Horse parentFemale = dao.getById(horse.parentFemaleId());
+      if (!parentFemale.sex().equals(Sex.FEMALE)) {
+        throw new ValidationException("The specified parent female must be of gender FEMALE.", Collections.emptyList());
+      }
+    }
+    if (horse.parentMaleId() != null) {
+      Horse parentMale = dao.getById(horse.parentMaleId());
+      if (!parentMale.sex().equals(Sex.MALE)) {
+        throw new ValidationException("The specified parent male must be of gender MALE.", Collections.emptyList());
+      }
+    }
+
     var updatedHorse = dao.update(horse);
     return mapper.entityToDetailDto(
         updatedHorse,
-        ownerMapForSingleId(updatedHorse.ownerId()));
+        ownerMapForSingleId(updatedHorse.ownerId())
+    );
   }
-
 
   @Override
   public HorseDetailDto getById(long id) throws NotFoundException {
@@ -87,9 +99,9 @@ public class HorseServiceImpl implements HorseService {
     Horse horse = dao.getById(id);
     return mapper.entityToDetailDto(
         horse,
-        ownerMapForSingleId(horse.ownerId()));
+        ownerMapForSingleId(horse.ownerId())
+    );
   }
-
 
   private Map<Long, OwnerDto> ownerMapForSingleId(Long ownerId) {
     try {
@@ -101,11 +113,24 @@ public class HorseServiceImpl implements HorseService {
     }
   }
 
-
   @Override
   public HorseDetailDto create(HorseCreateDto horseCreateDto)
       throws ValidationException, ConflictException, NotFoundException {
     LOG.trace("create({})", horseCreateDto);
+    
+    if (horseCreateDto.parentFemaleId() != null) {
+      Horse parentFemale = dao.getById(horseCreateDto.parentFemaleId());
+      if (!parentFemale.sex().equals(Sex.FEMALE)) {
+        throw new ValidationException("The specified parent female must be of gender FEMALE.", Collections.emptyList());
+      }
+    }
+    if (horseCreateDto.parentMaleId() != null) {
+      Horse parentMale = dao.getById(horseCreateDto.parentMaleId());
+      if (!parentMale.sex().equals(Sex.MALE)) {
+        throw new ValidationException("The specified parent male must be of gender MALE.", Collections.emptyList());
+      }
+      
+    }
     
     Horse createdHorse = dao.create(horseCreateDto);
     
@@ -115,10 +140,8 @@ public class HorseServiceImpl implements HorseService {
     );
   }
 
-
   @Override
   public void delete(long id) throws NotFoundException {
     dao.delete(id);
   }
-
 }

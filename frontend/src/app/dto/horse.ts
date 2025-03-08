@@ -9,6 +9,8 @@ export interface Horse {
   sex: Sex;
   image?: string;
   owner?: Owner;
+  parentFemale?: Horse;
+  parentMale?: Horse;
 }
 
 export interface HorseSearch {
@@ -23,6 +25,8 @@ export interface HorseCreate {
   sex: Sex;
   image?: string;
   ownerId?: number;
+  parentFemaleId?: number;
+  parentMaleId?: number;
 }
 
 export function convertFromHorseToCreate(horse: Horse): HorseCreate {
@@ -33,6 +37,7 @@ export function convertFromHorseToCreate(horse: Horse): HorseCreate {
     sex: horse.sex,
     image: horse.image,
     ownerId: horse.owner?.id,
+    parentFemaleId: horse.parentFemale ? horse.parentFemale.id : undefined,
+    parentMaleId: horse.parentMale ? horse.parentMale.id : undefined
   };
 }
-

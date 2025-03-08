@@ -89,7 +89,6 @@
     </div>
   </div>
 
-
   <div class="row mb-2">
     <label for="horseDescription" class="col-form-label text-md-end text-muted col-md-2">
       Description
@@ -103,7 +102,6 @@
         </textarea>
     </div>
   </div>
-
 
   <div class="mt-4 d-flex flex-row">
     <button
@@ -129,6 +127,50 @@
           placeholder="Enter image URL"
           class="form-control"
           [(ngModel)]="horse.image">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-2">
+  <div class="mb-2 col-lg-6">
+    <div class="row">
+      <label for="horseParentFemale" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+        Parent (Female)
+      </label>
+      <div class="col-md-10 col-lg-8">
+        <select
+          class="form-select"
+          id="horseParentFemale"
+          name="horseParentFemale"
+          [(ngModel)]="horse.parentFemale"
+          [compareWith]="compareHorses">
+          <option [ngValue]="undefined">-- Select Female Parent --</option>
+          <option *ngFor="let femaleHorse of femaleHorses" [ngValue]="femaleHorse">
+            {{ femaleHorse.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-2 col-lg-6">
+    <div class="row">
+      <label for="horseParentMale" class="col-form-label text-md-end text-muted col-md-2 col-lg-4">
+        Parent (Male)
+      </label>
+      <div class="col-md-10 col-lg-8">
+        <select
+          class="form-select"
+          id="horseParentMale"
+          name="horseParentMale"
+          [(ngModel)]="horse.parentMale"
+          [compareWith]="compareHorses">
+          <option [ngValue]="undefined">-- Select Male Parent --</option>
+          <option *ngFor="let maleHorse of maleHorses" [ngValue]="maleHorse">
+            {{ maleHorse.name }}
+          </option>
+        </select>
       </div>
     </div>
   </div>

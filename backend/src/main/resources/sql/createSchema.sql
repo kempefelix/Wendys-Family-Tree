@@ -16,5 +16,7 @@ CREATE TABLE IF NOT EXISTS horse
   date_of_birth DATE NOT NULL,
   sex ENUM('MALE', 'FEMALE') NOT NULL,
   image VARCHAR(255),
-  owner_id BIGINT
+  owner_id BIGINT,
+  parent_female_id BIGINT,
+  parent_male_id BIGINT
 );

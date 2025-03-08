@@ -63,7 +63,6 @@ export class HorseComponent implements OnInit {
     return horse.dateOfBirth.toLocaleDateString();
   }
 
-
   deleteHorse(horse: Horse) {
     if (horse.id == null) {
       console.error('Horse ID is undefined, cannot delete horse.');
@@ -80,5 +79,4 @@ export class HorseComponent implements OnInit {
       }
     });
   }
-  
 }

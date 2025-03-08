@@ -42,7 +42,9 @@ public class HorseMapper {
         horse.dateOfBirth(),
         horse.sex(),
         horse.image(),
-        getOwner(horse, owners)
+        getOwner(horse, owners),
+        horse.parentFemaleId(),
+        horse.parentMaleId()
     );
   }  
 
@@ -63,14 +65,16 @@ public class HorseMapper {
     }
 
     return new HorseDetailDto(
-      horse.id(),
-      horse.name(),
-      horse.description(),
-      horse.dateOfBirth(),
-      horse.sex(),
-      horse.image(),
-      getOwner(horse, owners)
-  );
+        horse.id(),
+        horse.name(),
+        horse.description(),
+        horse.dateOfBirth(),
+        horse.sex(),
+        horse.image(),
+        getOwner(horse, owners),
+        horse.parentFemaleId(),
+        horse.parentMaleId()
+    );
   }
 
   private OwnerDto getOwner(Horse horse, Map<Long, OwnerDto> owners) {
@@ -84,5 +88,4 @@ public class HorseMapper {
     }
     return owner;
   }
-
 }

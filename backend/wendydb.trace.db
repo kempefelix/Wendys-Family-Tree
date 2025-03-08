@@ -1,0 +1,91 @@
+2025-03-08 15:57:47.039438+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "HORSESET" nicht gefunden
+Table "HORSESET" not found; SQL statement:
+UPDATE horseSET name = ?,
+    description = ?,
+    date_of_birth = ?,
+    sex = ?,
+    image = ?,
+    owner_id = ?,
+    parent_female_id = ?,
+    parent_male_id = ?
+WHERE id = ?
+ [42102-232]
+2025-03-08 16:25:49.722720+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "HORSESET" nicht gefunden
+Table "HORSESET" not found; SQL statement:
+UPDATE horseSET name = ?,
+    description = ?,
+    date_of_birth = ?,
+    sex = ?,
+    image = ?,
+    owner_id = ?,
+    parent_female_id = ?,
+    parent_male_id = ?
+WHERE id = ?
+ [42102-232]
+2025-03-08 16:26:08.719651+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "HORSESET" nicht gefunden
+Table "HORSESET" not found; SQL statement:
+UPDATE horseSET name = ?,
+    description = ?,
+    date_of_birth = ?,
+    sex = ?,
+    image = ?,
+    owner_id = ?,
+    parent_female_id = ?,
+    parent_male_id = ?
+WHERE id = ?
+ [42102-232]
+2025-03-08 16:30:02.225255+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "HORSESET" nicht gefunden
+Table "HORSESET" not found; SQL statement:
+UPDATE horseSET name = ?,
+    description = ?,
+    date_of_birth = ?,
+    sex = ?,
+    image = ?,
+    owner_id = ?,
+    parent_female_id = ?,
+    parent_male_id = ?
+WHERE id = ?
+ [42102-232]
+2025-03-08 16:32:08.671712+01:00 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "HORSESET" nicht gefunden
+Table "HORSESET" not found; SQL statement:
+UPDATE horseSET name = ?,
+    description = ?,
+    date_of_birth = ?,
+    sex = ?,
+    image = ?,
+    owner_id = ?,
+    parent_female_id = ?,
+    parent_male_id = ?
+WHERE id = ?
+ [42102-232]
+2025-03-08 16:44:01.057105+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "HORSESET" nicht gefunden
+Table "HORSESET" not found; SQL statement:
+UPDATE horseSET name = ?,
+    description = ?,
+    date_of_birth = ?,
+    sex = ?,
+    image = ?,
+    owner_id = ?,
+    parent_female_id = ?,
+    parent_male_id = ?
+WHERE id = ?
+ [42102-232]
+2025-03-08 16:45:35.956624+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Tabelle "HORSESET" nicht gefunden
+Table "HORSESET" not found; SQL statement:
+UPDATE horseSET name = ?,
+    description = ?,
+    date_of_birth = ?,
+    sex = ?,
+    image = ?,
+    owner_id = ?,
+    parent_female_id = ?,
+    parent_male_id = ?
+WHERE id = ?
+ [42102-232]

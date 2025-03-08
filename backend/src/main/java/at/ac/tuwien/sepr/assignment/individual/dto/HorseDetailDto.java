@@ -15,6 +15,8 @@ public record HorseDetailDto(
     LocalDate dateOfBirth,
     Sex sex,
     String image,
-    OwnerDto owner
+    OwnerDto owner,
+    Long parentFemaleId,
+    Long parentMaleId
 ) {
 }

@@ -32,21 +32,23 @@ public class HorseJdbcDao implements HorseDao {
       "SELECT * FROM " + TABLE_NAME;
 
   private static final String SQL_SELECT_BY_ID =
-      "SELECT * FROM " + TABLE_NAME
-          + " WHERE ID = :id";
+      "SELECT * FROM " + TABLE_NAME + " WHERE id = :id";
 
   private static final String SQL_UPDATE =
-      "UPDATE " + TABLE_NAME
-          + """
-              SET name = :name,
-                  description = :description,
-                  date_of_birth = :date_of_birth,
-                  sex = :sex,
-                  image = :image,
-                  owner_id = :owner_id
-              WHERE id = :id
-          """;
-
+      "UPDATE " + TABLE_NAME + " " 
+      + 
+      """
+      SET name = :name,
+          description = :description,
+          date_of_birth = :date_of_birth,
+          sex = :sex,
+          image = :image,
+          owner_id = :owner_id,
+          parent_female_id = :parent_female_id,
+          parent_male_id = :parent_male_id
+      WHERE id = :id
+      """;
+  
 
   private final JdbcClient jdbcClient;
 
@@ -84,7 +86,6 @@ public class HorseJdbcDao implements HorseDao {
     return horses.getFirst();
   }
 
-
   @Override
   public Horse update(HorseUpdateDto horse) throws NotFoundException {
     LOG.trace("update({})", horse);
@@ -97,6 +98,8 @@ public class HorseJdbcDao implements HorseDao {
         .param("sex", horse.sex().toString())
         .param("image", horse.image())
         .param("owner_id", horse.ownerId())
+        .param("parent_female_id", horse.parentFemaleId())
+        .param("parent_male_id", horse.parentMaleId())
         .update();
 
     if (updated == 0) {
@@ -112,9 +115,11 @@ public class HorseJdbcDao implements HorseDao {
         horse.dateOfBirth(),
         horse.sex(),
         horse.image(),
-        horse.ownerId());
+        horse.ownerId(),
+        horse.parentFemaleId(),
+        horse.parentMaleId()
+    );
   }
-
 
   private Horse mapRow(ResultSet result, int rownum) throws SQLException {
     return new Horse(
@@ -124,17 +129,19 @@ public class HorseJdbcDao implements HorseDao {
         result.getDate("date_of_birth").toLocalDate(),
         Sex.valueOf(result.getString("sex")),
         result.getString("image"),
-        result.getObject("owner_id", Long.class));
+        result.getObject("owner_id", Long.class),
+        result.getObject("parent_female_id", Long.class),
+        result.getObject("parent_male_id", Long.class)
+    );
   }
-
 
   @Override
   public Horse create(HorseCreateDto horseCreateDto) throws NotFoundException {
     String sqlInsert = "INSERT INTO " + TABLE_NAME 
                        +
-                       " (name, description, date_of_birth, sex, image, owner_id) " 
+                       " (name, description, date_of_birth, sex, image, owner_id, parent_female_id, parent_male_id) " 
                        +
-                       "VALUES (:name, :description, :date_of_birth, :sex, :image, :owner_id)";
+                       "VALUES (:name, :description, :date_of_birth, :sex, :image, :owner_id, :parent_female_id, :parent_male_id)";
     
     int updated = jdbcClient
         .sql(sqlInsert)
@@ -144,6 +151,8 @@ public class HorseJdbcDao implements HorseDao {
         .param("sex", horseCreateDto.sex().toString())
         .param("image", horseCreateDto.image())
         .param("owner_id", horseCreateDto.ownerId())
+        .param("parent_female_id", horseCreateDto.parentFemaleId())
+        .param("parent_male_id", horseCreateDto.parentMaleId())
         .update();
     
     if (updated == 0) {
@@ -159,10 +168,11 @@ public class HorseJdbcDao implements HorseDao {
         horseCreateDto.dateOfBirth(),
         horseCreateDto.sex(),
         horseCreateDto.image(),
-        horseCreateDto.ownerId()
+        horseCreateDto.ownerId(),
+        horseCreateDto.parentFemaleId(),
+        horseCreateDto.parentMaleId()
     );
   }
-
 
   @Override
   public void delete(long id) throws NotFoundException {
@@ -175,5 +185,4 @@ public class HorseJdbcDao implements HorseDao {
       throw new NotFoundException("No horse with ID " + id + " found for deletion.");
     }
   }
-
 }
