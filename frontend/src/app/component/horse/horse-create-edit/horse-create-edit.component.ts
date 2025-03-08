@@ -54,8 +54,7 @@ export class HorseCreateEditComponent implements OnInit {
     private route: ActivatedRoute,
     private notification: ToastrService,
     private errorFormatter: ErrorFormatterService
-  ) {
-  }
+  ) {}
 
   public get heading(): string {
     switch (this.mode) {
@@ -144,7 +143,6 @@ export class HorseCreateEditComponent implements OnInit {
   }
   
   private loadAvailableParents(): void {
-    // Load female horses for dropdown (excluding current horse in edit mode)
     this.service.getAllByGender('FEMALE', this.horse.id).subscribe({
       next: (horses: Horse[]) => {
         this.femaleHorses = horses;
@@ -156,7 +154,6 @@ export class HorseCreateEditComponent implements OnInit {
       }
     });
     
-    // Load male horses for dropdown (excluding current horse in edit mode)
     this.service.getAllByGender('MALE', this.horse.id).subscribe({
       next: (horses: Horse[]) => {
         this.maleHorses = horses;
@@ -189,34 +186,54 @@ export class HorseCreateEditComponent implements OnInit {
   }
   
   private handleParentReferences(): void {
-    if (this.horse.parentFemale && typeof this.horse.parentFemale === 'number') {
-      const parentFemaleId = this.horse.parentFemale as unknown as number;
-      this.service.getById(parentFemaleId).subscribe({
-        next: (parentFemale: Horse) => {
-          this.horse.parentFemale = parentFemale;
-          if (!this.femaleHorses.some(horse => horse.id === parentFemale.id)) {
+    const horseAny = this.horse as any;
+    // Für Parent Female:
+    if (!this.horse.parentFemale && horseAny.parentFemaleId) {
+      const parentFemaleId = +horseAny.parentFemaleId;
+      const pf = this.femaleHorses.find(h => h.id === parentFemaleId);
+      if (pf) {
+        this.horse.parentFemale = pf;
+      } else {
+        this.service.getById(parentFemaleId).subscribe({
+          next: (parentFemale: Horse) => {
+            this.horse.parentFemale = parentFemale;
             this.femaleHorses.push(parentFemale);
+          },
+          error: err => {
+            console.error("Error loading parent female", err);
           }
-        },
-        error: err => {
-          console.error("Error loading parent female", err);
-        }
-      });
+        });
+      }
     }
-    
-    if (this.horse.parentMale && typeof this.horse.parentMale === 'number') {
-      const parentMaleId = this.horse.parentMale as unknown as number;
-      this.service.getById(parentMaleId).subscribe({
-        next: (parentMale: Horse) => {
-          this.horse.parentMale = parentMale;
-          if (!this.maleHorses.some(horse => horse.id === parentMale.id)) {
+    // For Parent Male:
+    if (!this.horse.parentMale && horseAny.parentMaleId) {
+      const parentMaleId = +horseAny.parentMaleId;
+      const pm = this.maleHorses.find(h => h.id === parentMaleId);
+      if (pm) {
+        this.horse.parentMale = pm;
+      } else {
+        this.service.getById(parentMaleId).subscribe({
+          next: (parentMale: Horse) => {
+            this.horse.parentMale = parentMale;
             this.maleHorses.push(parentMale);
+          },
+          error: err => {
+            console.error("Error loading parent male", err);
           }
-        },
-        error: err => {
-          console.error("Error loading parent male", err);
-        }
-      });
+        });
+      }
+    }
+  }
+  
+  getParentName(parent: Horse | number | null): string {
+    if (!parent) {
+      return 'None';
+    }
+    if (typeof parent === 'number') {
+      const found = this.femaleHorses.find(h => h.id === parent) || this.maleHorses.find(h => h.id === parent);
+      return found ? found.name : parent.toString();
+    } else {
+      return parent.name;
     }
   }
 

@@ -1,0 +1,37 @@
+<div class="container mt-3">
+  <h1>Horse Details</h1>
+
+  <div *ngIf="horse">
+    <p><strong>Name:</strong> {{ horse.name }}</p>
+    <p><strong>Description:</strong> {{ horse.description }}</p>
+    <p><strong>Date of Birth:</strong> {{ horse.dateOfBirth | date:'longDate' }}</p>
+    <p><strong>Sex:</strong> {{ horse.sex }}</p>
+    <p><strong>Image URL:</strong> {{ horse.image }}</p>
+    <p><strong>Owner:</strong> {{ horse.owner ? (horse.owner.firstName + ' ' + horse.owner.lastName) : 'None' }}</p>
+
+    <p>
+      <strong>Parent (Female):</strong>
+      <a *ngIf="horse.parentFemaleId" [routerLink]="['/horses', horse.parentFemaleId]">
+        {{ getParentName(horse.parentFemaleId) }}
+      </a>
+      <span *ngIf="!horse.parentFemaleId">None</span>
+    </p>
+    
+    <p>
+      <strong>Parent (Male):</strong>
+      <a *ngIf="horse.parentMaleId" [routerLink]="['/horses', horse.parentMaleId]">
+        {{ getParentName(horse.parentMaleId) }}
+      </a>
+      <span *ngIf="!horse.parentMaleId">None</span>
+    </p>
+
+    <div class="btn-group mt-3">
+      <button class="btn btn-primary" (click)="editHorse()">Edit</button>
+      <button class="btn btn-danger" (click)="deleteHorse()">Delete</button>
+    </div>
+  </div>
+
+  <div *ngIf="!horse">
+    <p>Loading horse details...</p>
+  </div>
+</div>
