@@ -1,9 +1,11 @@
 package at.ac.tuwien.sepr.assignment.individual.persistence;
 
+import java.util.Collection;
+
+import at.ac.tuwien.sepr.assignment.individual.dto.OwnerCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.OwnerSearchDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Owner;
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
-import java.util.Collection;
 
 /**
  * Data Access Object for owners.
@@ -42,4 +44,18 @@ public interface OwnerDao {
    */
   Collection<Owner> search(OwnerSearchDto searchParameters);
 
+  /**
+  *
+  * @param dto the DTO containing the new owner's data
+  * @return the created Owner entity with its generated ID
+  */
+  Owner create(OwnerCreateDto dto);
+
+  /**
+   * Deletes the owner with the specified ID from the persistent data store.
+   *
+   * @param id the ID of the owner to delete
+   * @throws NotFoundException if no owner with the given ID exists in the persistent data store
+   */
+  void delete(long id) throws NotFoundException;
 }

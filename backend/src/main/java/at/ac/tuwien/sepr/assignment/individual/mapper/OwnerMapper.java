@@ -1,11 +1,13 @@
 package at.ac.tuwien.sepr.assignment.individual.mapper;
 
-import at.ac.tuwien.sepr.assignment.individual.dto.OwnerDto;
-import at.ac.tuwien.sepr.assignment.individual.entity.Owner;
 import java.lang.invoke.MethodHandles;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
+import at.ac.tuwien.sepr.assignment.individual.dto.OwnerDto;
+import at.ac.tuwien.sepr.assignment.individual.entity.Owner;
 
 /**
  * Mapper class responsible for converting {@link Owner} entities to {@link OwnerDto} objects.
@@ -29,6 +31,7 @@ public class OwnerMapper {
         owner.id(),
         owner.firstName(),
         owner.lastName(),
-        owner.email());
+        owner.email(),
+        owner.description());
   }
 }

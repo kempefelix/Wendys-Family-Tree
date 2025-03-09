@@ -32,16 +32,26 @@ import at.ac.tuwien.sepr.assignment.individual.service.OwnerService;
 import at.ac.tuwien.sepr.assignment.individual.type.Sex;
 
 /**
- * Implementation of {@link HorseService} for handling image storage and retrieval.
+ * Implementation of {@link HorseService} that handles operations for managing horses.
+ * This implementation supports listing, searching, retrieving, creating, updating, and deleting horses.
  */
 @Service
 public class HorseServiceImpl implements HorseService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  
   private final HorseDao dao;
   private final HorseMapper mapper;
   private final HorseValidator validator;
   private final OwnerService ownerService;
 
+  /**
+   * Constructs a new HorseServiceImpl.
+   *
+   * @param dao the DAO for horse persistence operations
+   * @param mapper the mapper for converting between entities and DTOs
+   * @param validator the validator for horse update operations
+   * @param ownerService the service for handling owner-related operations
+   */
   @Autowired
   public HorseServiceImpl(HorseDao dao,
                           HorseMapper mapper,
@@ -53,11 +63,16 @@ public class HorseServiceImpl implements HorseService {
     this.ownerService = ownerService;
   }
 
+  /**
+   * Lists all horses stored in the system.
+   *
+   * @return a stream of {@link HorseListDto} for all horses
+   */
   @Override
   public Stream<HorseListDto> allHorses() {
     LOG.trace("allHorses()");
     var horses = dao.getAll();
-    var ownerIds = horses.stream()
+    Set<Long> ownerIds = horses.stream()
         .map(Horse::ownerId)
         .filter(Objects::nonNull)
         .collect(Collectors.toUnmodifiableSet());
@@ -71,6 +86,15 @@ public class HorseServiceImpl implements HorseService {
         .map(horse -> mapper.entityToListDto(horse, ownerMap));
   }
 
+  /**
+   * Updates an existing horse with the given update data.
+   *
+   * @param horse the update DTO containing the new data for the horse
+   * @return the updated horse as a detailed DTO
+   * @throws NotFoundException if the horse or a referenced entity is not found
+   * @throws ValidationException if the provided update data is invalid
+   * @throws ConflictException if the update data conflicts with existing system data
+   */
   @Override
   public HorseDetailDto update(HorseUpdateDto horse) throws NotFoundException, ValidationException, ConflictException {
     LOG.trace("update({})", horse);
@@ -96,6 +120,13 @@ public class HorseServiceImpl implements HorseService {
     );
   }
 
+  /**
+   * Retrieves a detailed horse by its ID.
+   *
+   * @param id the ID of the horse to retrieve
+   * @return the horse details as a {@link HorseDetailDto}
+   * @throws NotFoundException if no horse with the given ID exists
+   */
   @Override
   public HorseDetailDto getById(long id) throws NotFoundException {
     LOG.trace("details({})", id);
@@ -106,6 +137,13 @@ public class HorseServiceImpl implements HorseService {
     );
   }
 
+  /**
+   * Helper method to obtain a singleton owner map for a given owner ID.
+   *
+   * @param ownerId the owner ID
+   * @return a map with the owner ID as key and its DTO as value, or null if ownerId is null
+   * @throws FatalException if the owner referenced by the horse is not found
+   */
   private Map<Long, OwnerDto> ownerMapForSingleId(Long ownerId) {
     try {
       return ownerId == null
@@ -116,6 +154,15 @@ public class HorseServiceImpl implements HorseService {
     }
   }
 
+  /**
+   * Creates a new horse based on the provided creation data.
+   *
+   * @param horseCreateDto the DTO containing horse creation data
+   * @return the created horse as a detailed DTO
+   * @throws ValidationException if the provided data is invalid
+   * @throws ConflictException if there is a conflict (e.g., a referenced entity is missing)
+   * @throws NotFoundException if a referenced entity (e.g., owner) is not found
+   */
   @Override
   public HorseDetailDto create(HorseCreateDto horseCreateDto)
       throws ValidationException, ConflictException, NotFoundException {
@@ -132,7 +179,6 @@ public class HorseServiceImpl implements HorseService {
       if (!parentMale.sex().equals(Sex.MALE)) {
         throw new ValidationException("The specified parent male must be of gender MALE.", Collections.emptyList());
       }
-      
     }
     
     Horse createdHorse = dao.create(horseCreateDto);
@@ -143,11 +189,30 @@ public class HorseServiceImpl implements HorseService {
     );
   }
 
+  /**
+   * Deletes the horse with the given ID from the persistent data store.
+   *
+   * @param id the ID of the horse to delete
+   * @throws NotFoundException if no horse with the given ID exists in the persistent data store
+   */
   @Override
   public void delete(long id) throws NotFoundException {
     dao.delete(id);
   }
 
+  /**
+   * Searches for horses that match the provided search criteria.
+   *
+   * <p>
+   * The search criteria may include filters for name, description, birth date (older than a given date),
+   * sex, and owner. When multiple criteria are provided, only horses matching all criteria are returned.
+   * If no criteria are provided, all horses are listed.
+   * </p>
+   *
+   * @param criteria the {@link HorseSearchDto} encapsulating the search parameters
+   * @return a stream of {@link HorseListDto} objects representing the horses that match the criteria
+   * @throws NotFoundException if no horses match the criteria or if a referenced entity is missing
+   */
   @Override
   public Stream<HorseListDto> search(HorseSearchDto criteria) throws NotFoundException {
     List<Horse> horses = dao.search(criteria);

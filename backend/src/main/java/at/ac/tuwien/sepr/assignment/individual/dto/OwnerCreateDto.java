@@ -7,6 +7,7 @@ package at.ac.tuwien.sepr.assignment.individual.dto;
 public record OwnerCreateDto(
     String firstName,
     String lastName,
-    String email
+    String email,
+    String description
 ) {
 }

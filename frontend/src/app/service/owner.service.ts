@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Owner } from '../dto/owner';
+import { Owner, OwnerCreate } from '../dto/owner';
 
 const baseUri = environment.backendUrl + '/owners';
 
@@ -10,12 +10,21 @@ const baseUri = environment.backendUrl + '/owners';
   providedIn: 'root'
 })
 export class OwnerService {
+  constructor(private http: HttpClient) { }
 
-  constructor(
-    private http: HttpClient,
-  ) { }
+  getAll(): Observable<Owner[]> {
+    return this.http.get<Owner[]>(baseUri);
+  }
 
-  public searchByName(name: string, limitTo: number): Observable<Owner[]> {
+  create(owner: OwnerCreate): Observable<Owner> {
+    return this.http.post<Owner>(baseUri, owner);
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${baseUri}/${id}`);
+  }
+
+  searchByName(name: string, limitTo: number): Observable<Owner[]> {
     const params = new HttpParams()
       .set('name', name)
       .set('maxAmount', limitTo);

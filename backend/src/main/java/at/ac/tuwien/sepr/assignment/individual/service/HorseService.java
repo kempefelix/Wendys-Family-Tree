@@ -63,7 +63,27 @@ public interface HorseService {
       throws ValidationException, ConflictException, NotFoundException;
 
 
+  /**
+   * Deletes the horse with the given ID from the persistent data store.
+   *
+   * @param id the ID of the horse to delete
+   * @throws NotFoundException if no horse with the given ID exists in the persistent data store
+   */
   void delete(long id) throws NotFoundException;
 
+
+  /**
+   * Searches for horses based on the provided criteria.
+   *
+   * <p>
+   * The search criteria can include filtering by name, description, birth date (older than a given date),
+   * sex, and owner. When multiple criteria are provided, only horses matching all criteria are returned.
+   * If no criteria are provided, all horses are listed.
+   * </p>
+   *
+   * @param criteria the search criteria encapsulated in a {@link HorseSearchDto}
+   * @return a stream of {@link HorseListDto} objects matching the criteria
+   * @throws NotFoundException if no horses match the criteria (or if a referenced entity is missing)
+   */
   Stream<HorseListDto> search(HorseSearchDto criteria) throws NotFoundException;
 }

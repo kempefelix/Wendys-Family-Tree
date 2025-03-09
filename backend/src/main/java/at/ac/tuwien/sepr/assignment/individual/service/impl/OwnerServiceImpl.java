@@ -1,20 +1,24 @@
 package at.ac.tuwien.sepr.assignment.individual.service.impl;
 
-import at.ac.tuwien.sepr.assignment.individual.dto.OwnerDto;
-import at.ac.tuwien.sepr.assignment.individual.dto.OwnerSearchDto;
-import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
-import at.ac.tuwien.sepr.assignment.individual.mapper.OwnerMapper;
-import at.ac.tuwien.sepr.assignment.individual.persistence.OwnerDao;
-import at.ac.tuwien.sepr.assignment.individual.service.OwnerService;
 import java.lang.invoke.MethodHandles;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import at.ac.tuwien.sepr.assignment.individual.dto.OwnerCreateDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.OwnerDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.OwnerSearchDto;
+import at.ac.tuwien.sepr.assignment.individual.entity.Owner;
+import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
+import at.ac.tuwien.sepr.assignment.individual.mapper.OwnerMapper;
+import at.ac.tuwien.sepr.assignment.individual.persistence.OwnerDao;
+import at.ac.tuwien.sepr.assignment.individual.service.OwnerService;
 
 /**
  * Service implementation for managing owner-related operations.
@@ -81,4 +85,26 @@ public class OwnerServiceImpl implements OwnerService {
         .map(mapper::entityToDto);
   }
 
+  /**
+   * Creates a new owner in the persistent data store.
+   *
+   * @param dto the DTO containing the new owner's data
+   * @return the created owner as a {@link OwnerDto} with its generated ID
+   */
+  @Override
+  public OwnerDto create(OwnerCreateDto dto) {
+    Owner created = dao.create(dto);
+    return mapper.entityToDto(created);
+  }
+
+  /**
+   * Deletes an owner from the persistent data store by its ID.
+   *
+   * @param id the ID of the owner to delete
+   * @throws NotFoundException if no owner with the given ID exists in the persistent data store
+   */
+  @Override
+  public void delete(long id) throws NotFoundException {
+    dao.delete(id);
+  }
 }

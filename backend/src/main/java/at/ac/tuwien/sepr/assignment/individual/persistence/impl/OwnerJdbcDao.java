@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
+import at.ac.tuwien.sepr.assignment.individual.dto.OwnerCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.OwnerSearchDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Owner;
 import at.ac.tuwien.sepr.assignment.individual.exception.FatalException;
@@ -104,6 +105,42 @@ public class OwnerJdbcDao implements OwnerDao {
         resultSet.getLong("id"),
         resultSet.getString("first_name"),
         resultSet.getString("last_name"),
-        resultSet.getString("email"));
+        resultSet.getString("email"),
+        resultSet.getString("description")
+        );
   }
+
+  private static final String SQL_INSERT =
+      "INSERT INTO " + TABLE_NAME + " (first_name, last_name, email, description) " 
+      +
+      "VALUES (:firstName, :lastName, :email, :description)";
+
+  @Override
+  public Owner create(OwnerCreateDto dto) {
+    int updated = jdbcClient
+        .sql(SQL_INSERT)
+        .param("firstName", dto.firstName())
+        .param("lastName", dto.lastName())
+        .param("email", dto.email())
+        .param("description", dto.description())
+        .update();
+    if (updated == 0) {
+      throw new RuntimeException("Failed to create owner");
+    }
+    long generatedId = 0; 
+    return new Owner(generatedId, dto.firstName(), dto.lastName(), dto.email(), dto.description());
+  }
+
+  private static final String SQL_DELETE = "DELETE FROM " + TABLE_NAME + " WHERE id = :id";
+
+  @Override
+  public void delete(long id) throws NotFoundException {
+    int affected = jdbcClient
+        .sql(SQL_DELETE)
+        .param("id", id)
+        .update();
+    if (affected == 0) {
+      throw new NotFoundException("Owner with ID " + id + " not found for deletion.");
+    }
+  }  
 }

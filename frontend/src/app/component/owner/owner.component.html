@@ -1,0 +1,40 @@
+<div class="d-flex flex-row w-auto mb-3">
+  <button class="btn btn-primary mr-1" (click)="reloadOwners()" aria-label="Reload owners">
+    <i class="bi bi-arrow-clockwise"></i>
+    Reload
+  </button>
+  <span style="flex: 1"></span>
+  <a class="btn btn-secondary" routerLink="create" aria-label="New owner">
+    <i class="bi bi-plus-lg"></i>
+    New Owner
+  </a>
+</div>
+
+<div class="mt-3">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Description</th>
+        <th class="min-width">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let owner of owners; trackBy: trackOwner">
+        <td>{{ owner.firstName }} {{ owner.lastName }}</td>
+        <td>{{ owner.email }}</td>
+        <td>{{ owner.description }}</td>
+        <td>
+          <div class="btn-group">
+            <button class="btn btn-sm responsive-danger-button" 
+                    (click)="deleteOwner(owner)" 
+                    aria-label="Delete owner">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
