@@ -3,7 +3,9 @@ package at.ac.tuwien.sepr.assignment.individual.persistence.impl;
 import java.lang.invoke.MethodHandles;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseSearchDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import at.ac.tuwien.sepr.assignment.individual.exception.FatalException;
@@ -184,5 +187,43 @@ public class HorseJdbcDao implements HorseDao {
     if (affectedRows == 0) {
       throw new NotFoundException("No horse with ID " + id + " found for deletion.");
     }
+  }
+
+  @Override
+  public List<Horse> search(HorseSearchDto criteria) {
+    StringBuilder sql = new StringBuilder("SELECT * FROM " + TABLE_NAME + " WHERE 1=1");
+    Map<String, Object> params = new HashMap<>();
+
+    if (criteria.name() != null && !criteria.name().isBlank()) {
+      sql.append(" AND LOWER(name) LIKE :name");
+      params.put("name", "%" + criteria.name().toLowerCase() + "%");
+    }
+    if (criteria.description() != null && !criteria.description().isBlank()) {
+      sql.append(" AND LOWER(description) LIKE :description");
+      params.put("description", "%" + criteria.description().toLowerCase() + "%");
+    }
+    if (criteria.bornBefore() != null) {
+      sql.append(" AND date_of_birth < :bornBefore");
+      params.put("bornBefore", criteria.bornBefore());
+    }
+    if (criteria.sex() != null) {
+      sql.append(" AND sex = :sex");
+      params.put("sex", criteria.sex().toString());
+    }
+    if (criteria.ownerName() != null && !criteria.ownerName().isBlank()) {
+      sql.append(" AND owner_id IN (SELECT id FROM owner WHERE LOWER(first_name || ' ' || last_name) LIKE :ownerName)");
+      params.put("ownerName", "%" + criteria.ownerName().toLowerCase() + "%");
+    }
+    if (criteria.limit() != null) {
+      sql.append(" LIMIT :limit");
+      params.put("limit", criteria.limit());
+    }
+
+    LOG.debug("Executing search query: {} with params: {}", sql, params);
+    return jdbcClient
+        .sql(sql.toString())
+        .params(params)
+        .query(this::mapRow)
+        .list();
   }
 }

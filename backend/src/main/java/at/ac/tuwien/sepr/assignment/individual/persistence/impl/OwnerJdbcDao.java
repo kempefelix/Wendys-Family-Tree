@@ -1,10 +1,5 @@
 package at.ac.tuwien.sepr.assignment.individual.persistence.impl;
 
-import at.ac.tuwien.sepr.assignment.individual.dto.OwnerSearchDto;
-import at.ac.tuwien.sepr.assignment.individual.entity.Owner;
-import at.ac.tuwien.sepr.assignment.individual.exception.FatalException;
-import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
-import at.ac.tuwien.sepr.assignment.individual.persistence.OwnerDao;
 import java.lang.invoke.MethodHandles;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,11 +7,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
+
+import at.ac.tuwien.sepr.assignment.individual.dto.OwnerSearchDto;
+import at.ac.tuwien.sepr.assignment.individual.entity.Owner;
+import at.ac.tuwien.sepr.assignment.individual.exception.FatalException;
+import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
+import at.ac.tuwien.sepr.assignment.individual.persistence.OwnerDao;
 
 /**
  * JDBC implementation of {@link OwnerDao} for interacting with the database.

@@ -15,7 +15,10 @@ export interface Horse {
 
 export interface HorseSearch {
   name?: string;
-  // TODO fill in missing fields
+  description?: string;
+  bornBefore?: string;
+  sex?: string;
+  ownerName?: string;
 }
 
 export interface HorseCreate {

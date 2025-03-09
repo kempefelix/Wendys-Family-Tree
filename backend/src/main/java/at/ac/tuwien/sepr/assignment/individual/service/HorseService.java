@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseDetailDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseListDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseSearchDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
 import at.ac.tuwien.sepr.assignment.individual.exception.ConflictException;
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
@@ -64,4 +65,5 @@ public interface HorseService {
 
   void delete(long id) throws NotFoundException;
 
+  Stream<HorseListDto> search(HorseSearchDto criteria) throws NotFoundException;
 }

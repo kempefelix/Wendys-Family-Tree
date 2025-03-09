@@ -4,6 +4,7 @@ package at.ac.tuwien.sepr.assignment.individual.persistence;
 import java.util.List;
 
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseSearchDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
 import at.ac.tuwien.sepr.assignment.individual.exception.NotFoundException;
@@ -53,4 +54,6 @@ public interface HorseDao {
   Horse create(HorseCreateDto horseCreateDto) throws NotFoundException;
 
   void delete(long id) throws NotFoundException;
+
+  List<Horse> search(HorseSearchDto criteria) throws NotFoundException;
 }

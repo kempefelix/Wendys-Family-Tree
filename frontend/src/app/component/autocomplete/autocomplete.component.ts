@@ -68,8 +68,13 @@ export class AutocompleteComponent<T> implements OnInit, ControlValueAccessor {
    * for use in the text input field
    * and the data list options
    */
-  @Input() formatModel = (model: T | null) => (model as any).toString();
-
+  @Input() formatModel = (model: T | null) => {
+    if (!model) {
+      return '';
+    }
+    return (model as any).toString();
+  };
+  
 
   @Input() pattern: string | null = null;
 

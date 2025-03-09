@@ -10,7 +10,7 @@
   </a>
 </div>
 
-<form class="d-flex flex-row w-auto mb-3" (submit)="reloadHorses()">
+<form class="d-flex flex-row w-auto mb-3" (ngSubmit)="reloadHorses()">
   <button type="submit" hidden>submit</button>
 
   <div class="flex-grow-2">
@@ -19,7 +19,8 @@
       type="text"
       id="searchHorseName"
       name="searchHorseName"
-      class="form-control">
+      class="form-control"
+      [(ngModel)]="searchName">
   </div>
 
   <div class="flex-grow-1 ms-1">
@@ -28,7 +29,8 @@
       type="text"
       id="searchHorseDescription"
       name="searchHorseDescription"
-      class="form-control">
+      class="form-control"
+      [(ngModel)]="searchDescription">
   </div>
 
   <div class="ms-1">
@@ -39,7 +41,8 @@
       name="searchHorseDateOfBirth"
       pattern="\d{4}-\d{2}-\d{2}"
       placeholder="yyyy-mm-dd"
-      class="form-control">
+      class="form-control"
+      [(ngModel)]="searchDateOfBirth">
   </div>
 
   <div class="ms-1">
@@ -47,8 +50,9 @@
     <select
       id="searchHorseSex"
       name="searchHorseSex"
-      class="form-select">
-      <option></option>
+      class="form-select"
+      [(ngModel)]="searchSex">
+      <option value=""></option>
       <option value="FEMALE">Female</option>
       <option value="MALE">Male</option>
     </select>
@@ -60,7 +64,8 @@
       id="searchHorseOwner"
       name="searchHorseOwner"
       textInputClass="form-control"
-      valueNeedsToMatchSuggestion="false">
+      valueNeedsToMatchSuggestion="false"
+      [(ngModel)]="searchOwner">
     </app-autocomplete>
   </div>
 </form>

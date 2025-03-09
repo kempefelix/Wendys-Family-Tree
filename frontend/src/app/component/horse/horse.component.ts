@@ -7,7 +7,7 @@ import { HorseService } from 'src/app/service/horse.service';
 import { Horse } from 'src/app/dto/horse';
 import { Owner } from 'src/app/dto/owner';
 import { ConfirmDeleteDialogComponent } from 'src/app/component/confirm-delete-dialog/confirm-delete-dialog.component';
-
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-horse',
@@ -26,6 +26,12 @@ export class HorseComponent implements OnInit {
   bannerError: string | null = null;
   horseForDeletion: Horse | undefined;
 
+  searchName: string = '';
+  searchDescription: string = '';
+  searchDateOfBirth: string = '';
+  searchSex: string = '';
+  searchOwner: string = '';
+
   constructor(
     private service: HorseService,
     private notification: ToastrService,
@@ -36,21 +42,36 @@ export class HorseComponent implements OnInit {
   }
 
   reloadHorses() {
-    this.service.getAll()
-      .subscribe({
-        next: data => {
-          this.horses = data;
-          this.bannerError = null;
-        },
-        error: error => {
-          console.error('Error fetching horses', error);
-          this.bannerError = 'Could not fetch horses: ' + error.message;
-          const errorMessage = error.status === 0
-            ? 'Is the backend up?'
-            : error.message.message;
-          this.notification.error(errorMessage, 'Could Not Fetch Horses');
-        }
+    const hasCriteria = this.searchName || this.searchDescription ||
+      this.searchDateOfBirth || this.searchSex || this.searchOwner;
+
+    let observable: Observable<Horse[]>;
+    if (hasCriteria) {
+      observable = this.service.search({
+        name: this.searchName,
+        description: this.searchDescription,
+        bornBefore: this.searchDateOfBirth ? this.searchDateOfBirth : undefined,
+        sex: this.searchSex,
+        ownerName: this.searchOwner
       });
+    } else {
+      observable = this.service.getAll();
+    }
+
+    observable.subscribe({
+      next: (data: Horse[]) => {
+        this.horses = data;
+        this.bannerError = null;
+      },
+      error: (error: any) => {
+        console.error('Error fetching horses', error);
+        this.bannerError = 'Could not fetch horses: ' + error.message;
+        const errorMessage = error.status === 0
+          ? 'Is the backend up?'
+          : error.message.message;
+        this.notification.error(errorMessage, 'Could Not Fetch Horses');
+      }
+    });
   }
 
   ownerName(owner: Owner | null): string {

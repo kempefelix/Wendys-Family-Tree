@@ -2,8 +2,9 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {map, Observable} from 'rxjs';
 import {environment} from 'src/environments/environment';
-import {Horse, HorseCreate} from '../dto/horse';
+import {Horse, HorseCreate, HorseSearch}  from '../dto/horse';
 import {formatIsoDate} from "../utils/date-helper";
+import { HttpParams } from '@angular/common/http';
 
 
 const baseUri = environment.backendUrl + '/horses';
@@ -12,6 +13,7 @@ const baseUri = environment.backendUrl + '/horses';
   providedIn: 'root'
 })
 export class HorseService {
+  private baseUri = 'http://localhost:8080/horses';
 
   constructor(
     private http: HttpClient
@@ -111,5 +113,34 @@ export class HorseService {
         )
       )
     );
+  }
+
+  search(searchParams: HorseSearch): Observable<Horse[]> {
+    let params = new HttpParams();
+    
+    if (searchParams.name) {
+      params = params.set('name', searchParams.name);
+    }
+    
+    if (searchParams.description) {
+      params = params.set('description', searchParams.description);
+    }
+    
+    if (searchParams.bornBefore) {
+      params = params.set('bornBefore', searchParams.bornBefore);
+    }
+    
+    if (searchParams.sex) {
+      params = params.set('sex', searchParams.sex);
+    }
+    
+    if (searchParams.ownerName) {
+      params = params.set('ownerName', searchParams.ownerName);
+    }
+  
+    return this.http.get<Horse[]>(this.baseUri, { params })
+      .pipe(
+        map(horses => horses.map(this.fixHorseDate))
+      );
   }
 }

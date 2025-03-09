@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -52,13 +53,31 @@ public class HorseEndpoint {
    * @return a stream of {@link HorseListDto} matching the search criteria
    */
   @GetMapping
-  public Stream<HorseListDto> searchHorses(HorseSearchDto searchParameters) {
-    LOG.info("GET " + BASE_PATH);
-    LOG.debug("request parameters: {}", searchParameters);
-    // TODO We have the request params in the DTO now, but don't do anything with them yet…
-
-    return service.allHorses();
-  }
+  public Stream<HorseListDto> searchHorses(@ModelAttribute HorseSearchDto searchParameters) {
+    LOG.info("GET /horses");
+    LOG.debug("Request parameters: {}", searchParameters);
+  
+    boolean hasCriteria =
+        (searchParameters.name() != null && !searchParameters.name().isBlank()) 
+        ||
+        (searchParameters.description() != null && !searchParameters.description().isBlank()) 
+        ||
+        searchParameters.bornBefore() != null 
+        ||
+        searchParameters.sex() != null 
+        ||
+        (searchParameters.ownerName() != null && !searchParameters.ownerName().isBlank());
+  
+    try {
+      if (hasCriteria) {
+        return service.search(searchParameters);
+      } else {
+        return service.allHorses();
+      }
+    } catch (NotFoundException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+    }
+  }  
 
   /**
    * Retrieves the details of a horse by its ID.

@@ -2,8 +2,10 @@ package at.ac.tuwien.sepr.assignment.individual.service.impl;
 
 import java.lang.invoke.MethodHandles;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseCreateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseDetailDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseListDto;
+import at.ac.tuwien.sepr.assignment.individual.dto.HorseSearchDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.HorseUpdateDto;
 import at.ac.tuwien.sepr.assignment.individual.dto.OwnerDto;
 import at.ac.tuwien.sepr.assignment.individual.entity.Horse;
@@ -144,4 +147,16 @@ public class HorseServiceImpl implements HorseService {
   public void delete(long id) throws NotFoundException {
     dao.delete(id);
   }
+
+  @Override
+  public Stream<HorseListDto> search(HorseSearchDto criteria) throws NotFoundException {
+    List<Horse> horses = dao.search(criteria);
+    Set<Long> ownerIds = horses.stream()
+        .map(Horse::ownerId)
+        .filter(Objects::nonNull)
+        .collect(Collectors.toSet());
+    Map<Long, OwnerDto> ownerMap = ownerService.getAllById(ownerIds);
+    return horses.stream()
+        .map(horse -> mapper.entityToListDto(horse, ownerMap));
+  }  
 }
